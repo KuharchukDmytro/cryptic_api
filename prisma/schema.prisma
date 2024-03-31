@@ -24,11 +24,9 @@ model RefreshToken {
   id         Int      @id @default(autoincrement())
   userId     Int
   ip         String
-  browser    String
-  os         String
   token      String   @unique
-  expiresAt  DateTime
+  expiresAt  BigInt
   createdAt  DateTime @default(now())
   updatedAt  DateTime @default(now())
-  user       User     @relation(fields: [userId], references: [id])
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

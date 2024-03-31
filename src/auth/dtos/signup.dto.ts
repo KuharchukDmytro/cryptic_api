@@ -1,7 +1,9 @@
-import { Prisma } from '@prisma/client';
+// import { Prisma } from '@prisma/client';
 import { IsEmail, IsString, Matches, MinLength } from 'class-validator';
 
-export class CreateUserDto implements Omit<Prisma.UserCreateInput, 'salt'> {
+// interface UserCreationInput extends Omit<Prisma.UserCreateInput, 'salt'> {}
+
+export class SignUpDto {
   @IsString()
   @MinLength(5)
   @Matches(/^[a-zA-Z0-9_]*$/)
@@ -10,9 +12,6 @@ export class CreateUserDto implements Omit<Prisma.UserCreateInput, 'salt'> {
   @IsString()
   @MinLength(8)
   password: string;
-
-  @IsString()
-  salt: string;
 
   @IsEmail()
   email: string;
