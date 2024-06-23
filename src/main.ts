@@ -14,9 +14,9 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
-  const unused = '';
   app.setGlobalPrefix('/api/v1');
   await app.listen(8080);
+  const unused = '';
 }
 
 bootstrap();
