@@ -3,19 +3,20 @@ import * as nodemailer from 'nodemailer';
 
 @Injectable()
 export class NodemailerService {
-  async sendVerificationEmail(email: string, token: string) {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        type: 'OAuth2',
-        user: process.env.MAIL_USERNAME,
-        pass: process.env.MAIL_PASSWORD,
-        clientId: process.env.GOOGLE_CLIENT_ID,
-        clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-        refreshToken: process.env.GOOGLE_REFRESH_TOKEN,
-      },
-    } as nodemailer.TransportOptions | nodemailer.Transport<unknown>);
+  transporter: nodemailer.Transporter;
 
+  constructor() {
+    this.transporter = nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT),
+      auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASSWORD,
+      },
+    });
+  }
+
+  async sendVerificationEmail(email: string, token: string) {
     const verificationUrl = `${process.env.API_URL}/auth/verify-email/${email}?token=${token}`;
 
     const mailOptions = {
@@ -69,6 +70,6 @@ export class NodemailerService {
       `,
     };
 
-    await transporter.sendMail(mailOptions);
+    await this.transporter.sendMail(mailOptions);
   }
 }

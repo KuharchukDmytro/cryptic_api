@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma, User } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
+import { UserWithRefreshTokens } from './entities/user-with-refresh-token.entity';
 
 @Injectable()
 export class UserService {
@@ -12,9 +13,10 @@ export class UserService {
 
   async getByUsernameOrEmail(
     { email = '', username = '' },
-    options?: Prisma.UserCreateArgs,
-  ): Promise<User | null> {
+    options?: Prisma.UserFindFirstArgs,
+  ): Promise<UserWithRefreshTokens | null> {
     return this.databaseService.user.findFirst({
+      ...options,
       where: {
         OR: [
           {
@@ -25,16 +27,10 @@ export class UserService {
           },
         ],
       },
-      select: options?.select || undefined,
     });
   }
 
-  async update(id: number, options: Omit<Prisma.UserUpdateArgs, 'where'>) {
-    return this.databaseService.user.update({
-      ...options,
-      where: {
-        id,
-      },
-    });
+  async update(options: Prisma.UserUpdateArgs) {
+    return this.databaseService.user.update(options);
   }
 }

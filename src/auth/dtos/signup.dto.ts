@@ -1,7 +1,4 @@
-// import { Prisma } from '@prisma/client';
 import { IsEmail, IsString, Matches, MinLength } from 'class-validator';
-
-// interface UserCreationInput extends Omit<Prisma.UserCreateInput, 'salt'> {}
 
 export class SignUpDto {
   @IsString()
