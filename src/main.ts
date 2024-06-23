@@ -11,8 +11,8 @@ async function bootstrap() {
     allowedHeaders: 'Content-Type, Accept', // Allow these headers
     credentials: true, // Enable credentials
   });
-
   const unused = '';
+
   app.useGlobalPipes(new ValidationPipe());
 
   app.setGlobalPrefix('/api/v1');
