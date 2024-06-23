@@ -36,6 +36,8 @@ export class AuthController {
       email: createUserInput.email,
     });
 
+    const unused = '';
+
     if (user) {
       if (user.username === createUserInput.username) {
         throw new ConflictException('Username already in use!');
