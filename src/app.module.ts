@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
-import { DatabaseModule } from './database/database.module';
-import { RefreshTokenModule } from './refresh-token/refresh-token.module';
-import { NodemailerModule } from './nodemailer/nodemailer.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { DatabaseModule } from './modules/database/database.module';
+import { NodemailerModule } from './modules/nodemailer/nodemailer.module';
+import { RefreshTokenModule } from './modules/refresh-token/refresh-token.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [

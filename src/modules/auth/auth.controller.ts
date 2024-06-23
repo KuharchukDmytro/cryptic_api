@@ -11,14 +11,14 @@ import {
   Res,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
-import { NodemailerService } from 'src/nodemailer/nodemailer.service';
-import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
-import { UserService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
 import { ResendVerificationCodeDto } from './dtos/resend-verification-code.dto';
 import { SignInDto } from './dtos/signin.dto';
 import { SignUpDto } from './dtos/signup.dto';
 import { VerifyEmailFromAppDto } from './dtos/verify-email-from-app.dto';
+import { NodemailerService } from '../nodemailer/nodemailer.service';
+import { RefreshTokenService } from '../refresh-token/refresh-token.service';
+import { UserService } from '../user/user.service';
 
 @Controller('auth')
 export class AuthController {

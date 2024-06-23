@@ -1,7 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from 'src/database/database.service';
 import * as crypto from 'crypto';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class RefreshTokenService {

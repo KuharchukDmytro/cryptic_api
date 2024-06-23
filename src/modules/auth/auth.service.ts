@@ -1,15 +1,15 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { UserService } from 'src/user/user.service';
 import { SignUpDto } from './dtos/signup.dto';
 
 import { JwtService, JwtSignOptions } from '@nestjs/jwt';
-import { RefreshTokenService } from 'src/refresh-token/refresh-token.service';
 
 import * as bcrypt from 'bcrypt';
-import { User } from '@prisma/client';
-import { UserWithRefreshTokens } from 'src/user/entities/user-with-refresh-token.entity';
+import { RefreshToken, User } from '@prisma/client';
 import { TokenData } from './entities/token-data';
 import { RefreshTokenData } from './entities/refresh-token-data';
+import { RefreshTokenService } from '../refresh-token/refresh-token.service';
+import { UserWithRefreshTokens } from '../user/entities/user-with-refresh-token.entity';
+import { UserService } from '../user/user.service';
 
 @Injectable()
 export class AuthService {
@@ -65,7 +65,7 @@ export class AuthService {
 
     return {
       token: signedToken,
-      refreshToken: refreshToken.token,
+      refreshToken: (refreshToken as RefreshToken).token,
       user: userPayload,
     };
   }

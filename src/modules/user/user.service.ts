@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { DatabaseService } from 'src/database/database.service';
 import { UserWithRefreshTokens } from './entities/user-with-refresh-token.entity';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class UserService {
