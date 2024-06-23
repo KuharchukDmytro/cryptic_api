@@ -12,6 +12,8 @@ async function bootstrap() {
     credentials: true, // Enable credentials
   });
 
+  const unused = '';
+
   app.useGlobalPipes(new ValidationPipe());
   app.setGlobalPrefix('/api/v1');
   await app.listen(8080);
