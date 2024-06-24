@@ -82,7 +82,7 @@ export class AuthController {
       throw new HttpException('Incorrect login or password', 400);
     }
 
-    if (!user.emailVerified) {
+    if (user.verificationCode) {
       throw new HttpException('Email not verified', 400);
     }
 

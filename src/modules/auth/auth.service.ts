@@ -73,7 +73,7 @@ export class AuthService {
   async processSuccessEmailVerification(userId: number, userIp: string) {
     const updatedUser = await this.userService.update({
       where: { id: userId },
-      data: { verificationCode: null, emailVerified: true },
+      data: { verificationCode: null },
       select: { email: true, id: true, username: true },
     });
 
