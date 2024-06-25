@@ -11,6 +11,14 @@ export class UserService {
     return this.databaseService.user.create(options);
   }
 
+  getAll(options?: Prisma.UserFindManyArgs) {
+    return this.databaseService.user.findMany(options);
+  }
+
+  getOne(options: Prisma.UserFindFirstArgs) {
+    return this.databaseService.user.findFirst(options);
+  }
+
   async getByUsernameOrEmail(
     { email = '', username = '' },
     options?: Prisma.UserFindFirstArgs,

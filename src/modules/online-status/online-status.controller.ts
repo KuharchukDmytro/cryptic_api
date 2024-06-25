@@ -1,18 +1,15 @@
 import {
   Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
   Delete,
-  UseGuards,
+  Get,
+  Param,
+  Post,
   Req,
+  UseGuards,
 } from '@nestjs/common';
-import { OnlineStatusService } from './online-status.service';
-import { UpdateOnlineStatusDto } from './dto/update-online-status.dto';
-import { AuthGuard } from '../auth/auth.guard';
 import { RequestWithUser } from 'express';
+import { AuthGuard } from '../auth/auth.guard';
+import { OnlineStatusService } from './online-status.service';
 
 @UseGuards(AuthGuard)
 @Controller('online-status')
@@ -42,18 +39,18 @@ export class OnlineStatusController {
     });
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateOnlineStatusDto: UpdateOnlineStatusDto,
-  ) {
-    return this.onlineStatusService.update({
-      where: {
-        id: Number(id),
-      },
-      data: updateOnlineStatusDto,
-    });
-  }
+  // @Patch(':id')
+  // update(
+  //   @Param('id') id: string,
+  //   @Body() updateOnlineStatusDto: UpdateOnlineStatusDto,
+  // ) {
+  //   return this.onlineStatusService.update({
+  //     where: {
+  //       id: Number(id),
+  //     },
+  //     data: updateOnlineStatusDto,
+  //   });
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
