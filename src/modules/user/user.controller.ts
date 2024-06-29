@@ -1,8 +1,19 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Req,
+  UseGuards,
+  Patch,
+} from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dtos/create-user.dto';
 import { AuthGuard } from '../auth/auth.guard';
 import { RequestWithUser } from 'express';
+import { UpdateUserDto } from './dtos/update-user.dto';
 
 @UseGuards(AuthGuard)
 @Controller('user')
@@ -24,5 +35,16 @@ export class UserController {
   @Post()
   async createUser(@Body() userCreateInput: CreateUserDto) {
     return await this.userService.create({ data: userCreateInput });
+  }
+
+  @Patch(':id')
+  async updateUser(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() userUpdateInput: UpdateUserDto,
+  ) {
+    return await this.userService.update({
+      where: { id },
+      data: userUpdateInput,
+    });
   }
 }

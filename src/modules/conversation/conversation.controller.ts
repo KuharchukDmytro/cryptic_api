@@ -4,16 +4,16 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { RequestWithUser } from 'express';
+import { AuthGuard } from '../auth/auth.guard';
 import { ConversationService } from './conversation.service';
 import { CreateConversationDto } from './dto/create-conversation.dto';
-import { AuthGuard } from '../auth/auth.guard';
-import { RequestWithUser } from 'express';
+import { UpdateConversationDto } from './dto/update-conversation.dto';
 
 @UseGuards(AuthGuard)
 @Controller('conversation')
@@ -55,17 +55,32 @@ export class ConversationController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.conversationService.findOne(id);
+  findOne(@Param('id') id: string) {
+    return this.conversationService.findOne({
+      where: { id },
+    });
   }
 
   @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number) {
-    return this.conversationService.update(id);
+  update(
+    @Param('id') id: string,
+    { participants, ...rest }: UpdateConversationDto,
+  ) {
+    return this.conversationService.update({
+      where: { id },
+      data: {
+        ...rest,
+        participants: {
+          connect: participants?.map((id) => ({ id })),
+        },
+      },
+    });
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.conversationService.remove(id);
+  remove(@Param('id') id: string) {
+    return this.conversationService.remove({
+      where: { id },
+    });
   }
 }

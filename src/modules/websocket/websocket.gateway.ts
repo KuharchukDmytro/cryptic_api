@@ -42,6 +42,7 @@ export class WebsocketGateway
     @ConnectedSocket() client: Socket,
   ) {
     console.log(`Client ${client.id} joined room ${userUUID}`);
+
     client.join(userUUID);
   }
 
@@ -51,6 +52,7 @@ export class WebsocketGateway
     @ConnectedSocket() client: Socket,
   ) {
     console.log(`Client ${client.id} leaved room ${userUUID}`);
+
     client.leave(userUUID);
   }
 }

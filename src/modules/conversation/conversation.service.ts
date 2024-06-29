@@ -14,15 +14,15 @@ export class ConversationService {
     return this.database.conversation.findMany(options);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} conversation`;
+  findOne(options: Prisma.ConversationFindFirstArgs) {
+    return this.database.conversation.findFirst(options);
   }
 
-  update(id: number) {
-    return `This action updates a #${id} conversation`;
+  update(options: Prisma.ConversationUpdateArgs) {
+    return this.database.conversation.update(options);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} conversation`;
+  remove(options: Prisma.ConversationDeleteArgs) {
+    return this.database.conversation.delete(options);
   }
 }

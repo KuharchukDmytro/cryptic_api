@@ -1,5 +1,11 @@
 import { Prisma } from '@prisma/client';
-import { IsEmail, IsString, Matches, MinLength } from 'class-validator';
+import {
+  IsEmail,
+  IsOptional,
+  IsString,
+  Matches,
+  MinLength,
+} from 'class-validator';
 
 export class CreateUserDto implements Prisma.UserCreateInput {
   @IsString()
@@ -19,4 +25,8 @@ export class CreateUserDto implements Prisma.UserCreateInput {
 
   @IsString()
   verificationToken?: string;
+
+  @IsString()
+  @IsOptional()
+  avatarUrl?: string;
 }
