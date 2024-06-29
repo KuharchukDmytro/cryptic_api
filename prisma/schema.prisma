@@ -9,12 +9,14 @@ generator client {
 
 model User {
   id               Int              @id @default(autoincrement())
+  uuid             String           @default(uuid())
   username         String           @unique
   password         String
   email            String           @unique
   bio              String?
   salt             String
   verificationCode String?
+  avatarUrl        String           @default("https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1024px-User-avatar.svg.png")
   createdAt        DateTime         @default(now())
   updatedAt        DateTime         @updatedAt
   refreshTokens    RefreshToken[]

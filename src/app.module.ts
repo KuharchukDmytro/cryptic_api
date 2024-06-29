@@ -8,6 +8,8 @@ import { RefreshTokenModule } from './modules/refresh-token/refresh-token.module
 import { UserModule } from './modules/user/user.module';
 import { ConversationModule } from './modules/conversation/conversation.module';
 import { OnlineStatusModule } from './modules/online-status/online-status.module';
+import { MessageModule } from './modules/message/message.module';
+import { WebsocketModule } from './modules/websocket/websocket.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { OnlineStatusModule } from './modules/online-status/online-status.module
     NodemailerModule,
     OnlineStatusModule,
     ConversationModule,
+    MessageModule,
+    WebsocketModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Req,
@@ -54,17 +55,17 @@ export class ConversationController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.conversationService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.conversationService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string) {
-    return this.conversationService.update(+id);
+  update(@Param('id', ParseIntPipe) id: number) {
+    return this.conversationService.update(id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.conversationService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.conversationService.remove(id);
   }
 }
