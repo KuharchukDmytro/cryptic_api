@@ -48,7 +48,6 @@ export class ConversationController {
           orderBy: {
             createdAt: 'desc',
           },
-          take: 1,
         },
       },
     });

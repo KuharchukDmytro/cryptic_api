@@ -4,16 +4,16 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Req,
   UseGuards,
-  Patch,
 } from '@nestjs/common';
-import { UserService } from './user.service';
-import { CreateUserDto } from './dtos/create-user.dto';
-import { AuthGuard } from '../auth/auth.guard';
 import { RequestWithUser } from 'express';
+import { AuthGuard } from '../auth/auth.guard';
+import { CreateUserDto } from './dtos/create-user.dto';
 import { UpdateUserDto } from './dtos/update-user.dto';
+import { UserService } from './user.service';
 
 @UseGuards(AuthGuard)
 @Controller('user')
@@ -30,6 +30,44 @@ export class UserController {
   @Get('/all')
   async getAll() {
     return await this.userService.getAll();
+  }
+
+  @Get('/search-by-username')
+  search(@Req() req: RequestWithUser) {
+    const username = req.query.username as string;
+
+    return this.userService.getAll({
+      where: {
+        username: {
+          contains: username,
+        },
+      },
+      select: {
+        id: true,
+        uuid: true,
+        email: true,
+        username: true,
+        avatarUrl: true,
+        onlineStatus: true,
+        conversations: {
+          where: {
+            participants: {
+              some: {
+                id: req.currentUserId,
+              },
+            },
+          },
+          include: {
+            messages: {
+              orderBy: {
+                createdAt: 'desc',
+              },
+              take: 1,
+            },
+          },
+        },
+      },
+    });
   }
 
   @Post()
