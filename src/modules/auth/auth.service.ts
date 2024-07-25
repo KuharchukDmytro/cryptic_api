@@ -133,6 +133,36 @@ export class AuthService {
     return newVerificationCode;
   }
 
+  async processAuthTokensUpdate(refreshToken: RefreshToken) {
+    const user = await this.userService.getOne({
+      where: { id: refreshToken.userId },
+    });
+
+    if (!user) {
+      throw new InternalServerErrorException('User not found');
+    }
+
+    const updatedRefreshToken =
+      await this.refreshTokenService.updateTokenAndExpires({
+        where: {
+          id: refreshToken.id,
+        },
+        data: {},
+      });
+
+    const userPayload = this.getUserPayloadForJwt(user);
+
+    const signedToken = this.signJwtToken(userPayload);
+    const signedRefreshToken = this.signJwtToken(updatedRefreshToken, {
+      expiresIn: '30d',
+    });
+
+    return {
+      token: signedToken,
+      refreshToken: signedRefreshToken,
+    };
+  }
+
   getUserPayloadForJwt(user: Partial<User>) {
     if (!user.email || !user.username || !user.id) {
       throw new InternalServerErrorException('Invalid jwt input');

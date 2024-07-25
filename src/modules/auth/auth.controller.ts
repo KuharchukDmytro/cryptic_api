@@ -10,7 +10,7 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { Request, RequestWithUser, Response } from 'express';
 import { AuthService } from './auth.service';
 import { ResendVerificationCodeDto } from './dtos/resend-verification-code.dto';
 import { SignInDto } from './dtos/signin.dto';
@@ -19,6 +19,8 @@ import { VerifyEmailFromAppDto } from './dtos/verify-email-from-app.dto';
 import { NodemailerService } from '../nodemailer/nodemailer.service';
 import { RefreshTokenService } from '../refresh-token/refresh-token.service';
 import { UserService } from '../user/user.service';
+import { RefreshTokenDto } from './dtos/refresh-token.dto';
+import { UserWithRefreshTokens } from '../user/entities/user-with-refresh-token.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -29,7 +31,7 @@ export class AuthController {
     private readonly nodemailerService: NodemailerService,
   ) {}
 
-  @Post('/signup')
+  @Post('signup')
   async signup(@Body() createUserInput: SignUpDto) {
     const user = await this.userService.getByUsernameOrEmail({
       username: createUserInput.username,
@@ -69,7 +71,7 @@ export class AuthController {
     );
 
     if (!user) {
-      throw new HttpException('Incorrect login or password', 404);
+      throw new HttpException('Incorrect login or password', 400);
     }
 
     const isPasswordValid = await this.authService.validatePassword(
@@ -95,12 +97,12 @@ export class AuthController {
   @Get('verify-email/:email')
   @Header('Cache-Control', 'no-cache, private')
   async verifyEmail(
-    @Param('email') emailInput: string,
+    @Param('email') email: string,
     @Req() req: Request,
     @Res() res: Response,
   ) {
     const user = await this.userService.getByUsernameOrEmail({
-      email: emailInput,
+      email,
     });
 
     if (!user || user.verificationCode !== req.query.token) {
@@ -154,6 +156,27 @@ export class AuthController {
     return { message: 'Verification code resent successfully.' };
   }
 
-  @Post('refresh-token')
-  async refreshToken() {}
+  @Post('refresh-token-update')
+  async refreshToken(
+    @Req() req: RequestWithUser,
+    @Body() refreshTokenDto: RefreshTokenDto,
+  ) {
+    const user = (await this.userService.getOne({
+      where: {
+        id: req.currentUserId,
+      },
+      include: {
+        refreshTokens: true,
+      },
+    })) as UserWithRefreshTokens;
+
+    const token = user?.refreshTokens?.find(
+      (refreshToken) => refreshToken.token === refreshTokenDto.refreshToken,
+    );
+    const isValidToken = user?.refreshTokens && token;
+
+    if (!isValidToken) {
+      throw new HttpException('Invalid refresh token', 401);
+    }
+  }
 }
