@@ -66,7 +66,7 @@ export class AuthService {
     return {
       token: signedToken,
       refreshToken: (refreshToken as RefreshToken).token,
-      user: userPayload,
+      user: { ...userPayload, avatarUrl: user.avatarUrl },
     };
   }
 
@@ -143,12 +143,7 @@ export class AuthService {
     }
 
     const updatedRefreshToken =
-      await this.refreshTokenService.updateTokenAndExpires({
-        where: {
-          id: refreshToken.id,
-        },
-        data: {},
-      });
+      await this.refreshTokenService.updateTokenAndExpires(refreshToken.id);
 
     const userPayload = this.getUserPayloadForJwt(user);
 

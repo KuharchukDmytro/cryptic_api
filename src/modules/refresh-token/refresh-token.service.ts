@@ -1,11 +1,15 @@
-import { Prisma } from '@prisma/client';
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import * as crypto from 'crypto';
 import { DatabaseService } from '../database/database.service';
 
 @Injectable()
 export class RefreshTokenService {
   constructor(private readonly databaseService: DatabaseService) {}
+
+  getOne(options: Prisma.RefreshTokenFindFirstArgs) {
+    return this.databaseService.refreshToken.findFirst(options);
+  }
 
   async create(
     userId: number,
@@ -29,15 +33,16 @@ export class RefreshTokenService {
     return refreshTokenRecord;
   }
 
-  async updateTokenAndExpires(options: Prisma.RefreshTokenUpdateArgs) {
+  async updateTokenAndExpires(id: number) {
     const refreshToken = crypto.randomUUID();
     const expiresAt = new Date();
     expiresAt.setSeconds(expiresAt.getSeconds() + 14 * 24 * 60 * 60);
 
     const refreshTokenRecord = await this.databaseService.refreshToken.update({
-      ...options,
+      where: {
+        id,
+      },
       data: {
-        ...options.data,
         token: refreshToken,
         expiresAt,
       },

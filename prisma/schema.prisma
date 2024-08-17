@@ -8,82 +8,83 @@ generator client {
 }
 
 model User {
-  id               Int              @id @default(autoincrement())
-  uuid             String           @default(uuid())
-  username         String           @unique
+  id               Int            @id @default(autoincrement())
+  uuid             String         @default(uuid())
+  username         String         @unique
   password         String
-  email            String           @unique
+  email            String         @unique
   bio              String?
   salt             String
   verificationCode String?
-  avatarUrl        String           @default("https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1024px-User-avatar.svg.png")
-  createdAt        DateTime         @default(now())
-  updatedAt        DateTime         @updatedAt
+  avatarUrl        String         @default("https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/User-avatar.svg/1024px-User-avatar.svg.png")
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
   refreshTokens    RefreshToken[]
-  conversations    Conversation[]   @relation("UserConversations")
+  conversations    Conversation[] @relation("UserConversations")
   messages         Message[]
   onlineStatus     OnlineStatus?
 }
 
 model RefreshToken {
-  id         Int      @id @default(autoincrement())
-  userId     Int
-  ip         String
-  token      String
-  expiresAt  DateTime
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  ip        String
+  token     String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Conversation {
-  id                  String           @id @default(uuid())
-  participants        User[]           @relation("UserConversations")
-  isGroupConversation Boolean          @default(false)
-  createdAt           DateTime         @default(now())
-  updatedAt           DateTime         @updatedAt
+  id                  String    @id @default(uuid())
+  participants        User[]    @relation("UserConversations")
+  isGroupConversation Boolean   @default(false)
+  hasStarted          Boolean   @default(false)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
   messages            Message[]
   media               Media[]
 }
 
 model Message {
-  id             Int       @id @default(autoincrement())
+  id             Int          @id @default(autoincrement())
   senderId       Int
   conversationId String
   message        String
-  isEdited       Boolean   @default(false)
-  createdAt      DateTime  @default(now())
-  updatedAt      DateTime  @updatedAt
+  isEdited       Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
-  sender         User       @relation(fields: [senderId], references: [id], onDelete: Cascade)
+  sender         User         @relation(fields: [senderId], references: [id], onDelete: Cascade)
   media          Media?
 }
 
 model Media {
-  id             Int         @id @default(autoincrement())
+  id             Int          @id @default(autoincrement())
   conversationId String
-  messageId      Int      @unique
+  messageId      Int          @unique
   conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
   message        Message      @relation(fields: [messageId], references: [id], onDelete: Cascade)
   images         Image[]
 }
 
 model Image {
-  id         Int       @id @default(autoincrement())
-  mediaId    Int
-  url        String
-  size       Float
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-  media      Media     @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+  id        Int      @id @default(autoincrement())
+  mediaId   Int
+  url       String
+  size      Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  media     Media    @relation(fields: [mediaId], references: [id], onDelete: Cascade)
 }
 
 model OnlineStatus {
-  id         Int       @id @default(autoincrement())
-  userId     Int       @unique
-  status     Status    @default(ONLINE)
-  lastActive DateTime  @default(now())
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id         Int      @id @default(autoincrement())
+  userId     Int      @unique
+  status     Status   @default(ONLINE)
+  lastActive DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 enum Status {

@@ -1,4 +1,4 @@
-import { Message } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import {
   IsBoolean,
   IsNumber,
@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 
 export class CreateMessageDto
-  implements Omit<Message, 'id' | 'createdAt' | 'updatedAt'>
+  implements Omit<Prisma.MessageCreateInput, 'conversation' | 'sender'>
 {
   @IsNumber()
   senderId: number;

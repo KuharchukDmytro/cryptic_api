@@ -10,17 +10,16 @@ import {
   Req,
   Res,
 } from '@nestjs/common';
-import { Request, RequestWithUser, Response } from 'express';
+import { Request, Response } from 'express';
+import { NodemailerService } from '../nodemailer/nodemailer.service';
+import { RefreshTokenService } from '../refresh-token/refresh-token.service';
+import { UserService } from '../user/user.service';
 import { AuthService } from './auth.service';
+import { RefreshTokenDto } from './dtos/refresh-token.dto';
 import { ResendVerificationCodeDto } from './dtos/resend-verification-code.dto';
 import { SignInDto } from './dtos/signin.dto';
 import { SignUpDto } from './dtos/signup.dto';
 import { VerifyEmailFromAppDto } from './dtos/verify-email-from-app.dto';
-import { NodemailerService } from '../nodemailer/nodemailer.service';
-import { RefreshTokenService } from '../refresh-token/refresh-token.service';
-import { UserService } from '../user/user.service';
-import { RefreshTokenDto } from './dtos/refresh-token.dto';
-import { UserWithRefreshTokens } from '../user/entities/user-with-refresh-token.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -156,27 +155,20 @@ export class AuthController {
     return { message: 'Verification code resent successfully.' };
   }
 
-  @Post('refresh-token-update')
-  async refreshToken(
-    @Req() req: RequestWithUser,
-    @Body() refreshTokenDto: RefreshTokenDto,
-  ) {
-    const user = (await this.userService.getOne({
+  @Post('update-refresh-token')
+  async refreshToken(@Body() refreshTokenDto: RefreshTokenDto) {
+    await this.authService.verifyRefreshToken(refreshTokenDto.refreshToken);
+
+    const refreshToken = await this.refreshTokenService.getOne({
       where: {
-        id: req.currentUserId,
+        token: refreshTokenDto.refreshToken,
       },
-      include: {
-        refreshTokens: true,
-      },
-    })) as UserWithRefreshTokens;
+    });
 
-    const token = user?.refreshTokens?.find(
-      (refreshToken) => refreshToken.token === refreshTokenDto.refreshToken,
-    );
-    const isValidToken = user?.refreshTokens && token;
-
-    if (!isValidToken) {
+    if (!refreshToken) {
       throw new HttpException('Invalid refresh token', 401);
     }
+
+    return this.authService.processAuthTokensUpdate(refreshToken);
   }
 }

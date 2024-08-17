@@ -41,12 +41,13 @@ export class ConversationController {
             id: req.currentUserId,
           },
         },
+        hasStarted: true,
       },
       include: {
         participants: true,
         messages: {
           orderBy: {
-            createdAt: 'desc',
+            createdAt: 'asc',
           },
         },
       },

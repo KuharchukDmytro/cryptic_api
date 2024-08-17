@@ -1,9 +1,9 @@
-import { Conversation } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { Type } from 'class-transformer';
 import { IsArray, IsBoolean, IsOptional } from 'class-validator';
 
 export class CreateConversationDto
-  implements Omit<Conversation, 'id' | 'createdAt' | 'updatedAt'>
+  implements Omit<Prisma.ConversationCreateInput, 'participants'>
 {
   @IsBoolean()
   @IsOptional()
